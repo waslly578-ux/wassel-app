@@ -7,11 +7,26 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # 1. تجهيز بيئة بايثون (الأداة الأساسية)
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      # 2. تثبيت أدوات المبرمجين (التبعية)
+      - name: Install dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y git zip unzip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo5 cmake libffi-dev libssl-dev
+          pip install --user --upgrade buildozer Cython virtualenv
+
+      # 3. تشغيل المصنع (البلدوزر)
       - name: Build with Buildozer
-        uses: pypa/buildozer-action@v1
+        uses: ArtemSerebryakov/buildozer-action@v1
         with:
           buildozer_version: master
 
+      # 4. استخراج المنتج النهائي
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
